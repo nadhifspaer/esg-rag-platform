@@ -1,0 +1,38 @@
+{
+  "category": "social",
+  "source": "ESG Disclosure Guide Book (EDGB), the 'S' (Social) ESG-metric indicators (S-01–S-09) in the `standards` corpus, which map bank social disclosures to GRI topic codes GRI 401 / 403 / 404 / 405 / 406 / 412. As with the environmental checklist, the EDGB is the in-corpus anchor for which social GRI topics are material to banks; the GRI social topic-standard PDFs themselves are not in the knowledge base, so the standard GRI disclosure sub-codes are used. Scoped to high-materiality workforce, occupational-health-and-safety, diversity, and human-rights items. EDGB social indicators carried without a GRI topic code — S-04 (number of temporary employees), S-07 (count of human-rights violations), and S-10 (child/forced-labor policy, tagged WFE only) — are omitted because they fall outside a GRI-coded checklist. EDGB tags its human-rights-policy indicator (S-09) as a bare 'GRI 412'; it is mapped here to GRI 412-1 (human rights review / due diligence) as the closest standard GRI disclosure. Anti-corruption (GRI 205) and economic items (GRI 201/210/215) that the EDGB also carries are governance/economic, not social, and belong to the governance checklist.",
+  "items": [
+    {
+      "code": "GRI 401-1",
+      "description": "New employee hires and employee turnover: the rates of new employee hires and of employee turnover during the reporting period, including where reported the split between voluntary and involuntary turnover, indicating workforce stability and retention.",
+      "topic_keywords": ["employee turnover", "turnover rate", "new employee hires", "employee retention", "tingkat perputaran karyawan", "turnover karyawan", "rekrutmen karyawan"]
+    },
+    {
+      "code": "GRI 403-9",
+      "description": "Work-related injuries: the number and rate of work-related injuries and accidents (including fatalities and high-consequence injuries) arising from the bank's operations, reflecting occupational health and safety performance.",
+      "topic_keywords": ["work-related injuries", "occupational accidents", "workplace accidents", "occupational health and safety", "kecelakaan kerja", "keselamatan dan kesehatan kerja", "K3"]
+    },
+    {
+      "code": "GRI 404-1",
+      "description": "Average hours of training per employee: the average hours of training undertaken per employee during the reporting period, indicating the bank's investment in employee skills and development.",
+      "topic_keywords": ["training hours", "average training hours", "employee training", "training and development", "jam pelatihan", "pelatihan karyawan", "pengembangan karyawan"]
+    },
+    {
+      "code": "GRI 405-1",
+      "description": "Diversity of employees: the composition of the bank's workforce (and, where reported, its governance bodies) broken down by gender and by age group across job levels, indicating diversity and equal opportunity.",
+      "topic_keywords": ["employee diversity", "gender diversity", "workforce by gender", "age diversity", "diversity and equal opportunity", "keberagaman karyawan", "komposisi karyawan berdasarkan gender"]
+    },
+    {
+      "code": "GRI 406-1",
+      "description": "Incidents of discrimination and non-discrimination measures: incidents of discrimination during the reporting period and any corrective actions taken, and/or the bank's non-discrimination and anti-sexual-harassment policy.",
+      "topic_keywords": ["discrimination", "non-discrimination", "incidents of discrimination", "sexual harassment policy", "diskriminasi", "anti-diskriminasi", "pelecehan seksual"],
+      "row_anchors": ["S-08"]
+    },
+    {
+      "code": "GRI 412-1",
+      "description": "Human rights policy and due diligence: whether the bank has a formal human rights policy commitment and conducts human rights reviews or impact assessments across its operations and value chain.",
+      "topic_keywords": ["human rights", "human rights policy", "human rights due diligence", "human rights assessment", "hak asasi manusia", "HAM", "kebijakan hak asasi manusia"],
+      "row_anchors": ["S-09"]
+    }
+  ]
+}

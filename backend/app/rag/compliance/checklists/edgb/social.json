@@ -1,0 +1,79 @@
+{
+  "category": "social",
+  "source": "IDX ESG Disclosure Guide Book (EDGB). Codes and descriptions confirmed live against BANK-BCA's own bilingual index table (p.8/17) and, where the index label was ambiguous, cross-checked against the real value row itself (p.5/15) — same discipline as `checklists/edgb/environmental.json`.",
+  "note_on_S-12": "The Indonesian index table (p.8) mislabels S-12 as 'Pencegahan Konflik Kepentingan' (Conflict of Interest Prevention) — the same label G-09 legitimately carries. The English index table (p.17) and both languages' real value rows (p.5: 'Perusahaan memiliki aktivitas CSR...'; p.15: 'Does the company have CSR activities, investments or donations...') agree it is Corporate Social Responsibility, not conflict of interest. This checklist uses the value-row-grounded description, not the mislabelled index entry — the same 'never trust a single row's label' discipline the mislabelled-GHG-row defect (docs/architecture.md, 2026-07-25) already established for this corpus.",
+  "items": [
+    {
+      "code": "S-01",
+      "description": "Gender equality: the composition of the bank's workforce by gender.",
+      "topic_keywords": ["gender equality", "gender diversity", "kesetaraan gender"],
+      "row_anchors": ["S-01"]
+    },
+    {
+      "code": "S-02",
+      "description": "Employees by gender and age group: headcount broken down by gender and age bracket.",
+      "topic_keywords": ["employees by gender", "employees by age group", "pegawai berdasarkan gender", "kelompok umur"],
+      "row_anchors": ["S-02"]
+    },
+    {
+      "code": "S-03",
+      "description": "Employee turnover rate: the rate at which employees leave the bank during the reporting year.",
+      "topic_keywords": ["employee turnover", "turnover rate", "tingkat pergantian pegawai"],
+      "row_anchors": ["S-03"]
+    },
+    {
+      "code": "S-04",
+      "description": "Number of temporary employees: the count of non-permanent staff.",
+      "topic_keywords": ["temporary employees", "temporary officers", "pegawai sementara"],
+      "row_anchors": ["S-04"]
+    },
+    {
+      "code": "S-05",
+      "description": "Employee training and development: the training and development activity provided to employees during the reporting year.",
+      "topic_keywords": ["employee training", "training and development", "pelatihan dan pengembangan pegawai"],
+      "row_anchors": ["S-05"]
+    },
+    {
+      "code": "S-06",
+      "description": "Number of work accidents: the count and/or rate of work-related accidents during the reporting year.",
+      "topic_keywords": ["work accidents", "injury rate", "kecelakaan kerja"],
+      "row_anchors": ["S-06"]
+    },
+    {
+      "code": "S-07",
+      "description": "Human rights violation incidents: the number of incidents regarding human rights abuse in the reporting year.",
+      "topic_keywords": ["human rights violation", "human rights abuse incidents", "pelanggaran hak asasi manusia"],
+      "row_anchors": ["S-07"]
+    },
+    {
+      "code": "S-08",
+      "description": "Sexual harassment and/or non-discrimination policy: whether the bank has a policy regarding sexual harassment and/or non-discrimination.",
+      "topic_keywords": ["sexual harassment policy", "non-discrimination policy", "kebijakan pelecehan seksual", "non-diskriminasi"],
+      "row_anchors": ["S-08"]
+    },
+    {
+      "code": "S-09",
+      "description": "Human rights policy: whether the bank has a policy regarding human rights.",
+      "topic_keywords": ["human rights policy", "kebijakan hak asasi manusia"],
+      "row_anchors": ["S-09"]
+    },
+    {
+      "code": "S-10",
+      "description": "Child labor and/or forced labor policy: whether the bank has a policy regarding child labor and/or forced labor.",
+      "topic_keywords": ["child labor policy", "forced labor policy", "pekerja anak", "pekerja paksa"],
+      "row_anchors": ["S-10"]
+    },
+    {
+      "code": "S-11",
+      "description": "Occupational health and safety policy: whether the bank has a policy on occupational health and safety and a safe, decent working environment for all employees.",
+      "topic_keywords": ["occupational health and safety", "safe working environment", "kesehatan dan keselamatan kerja", "lingkungan kerja yang aman"],
+      "row_anchors": ["S-11"]
+    },
+    {
+      "code": "S-12",
+      "description": "Corporate Social Responsibility: whether the bank has CSR activities, investments, or donations to the community or registered non-profit organizations. Note: the Indonesian index table mislabels this code as conflict-of-interest prevention; the value row itself (both languages) is unambiguously CSR — see `note_on_S-12` above.",
+      "topic_keywords": ["corporate social responsibility", "csr activities", "community donations", "tanggung jawab sosial perusahaan", "aktivitas csr"],
+      "row_anchors": ["S-12"]
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "category": "environmental",
+  "source": "ESG Disclosure Guide Book (EDGB), Appendix A ESG Metrics (in the `standards` corpus), which maps bank ESG disclosures to GRI topic codes GRI 302 / 305 / 306. The GRI topic-standard PDFs themselves are not in the knowledge base; the EDGB is the in-corpus source that carries these GRI codes. Scoped to high-materiality emissions, energy, and waste items for banks — GRI 305-6 (ozone-depleting substances) and 305-7 (NOx/SOx and other air emissions) are deliberately omitted as non-material for banks and absent from the EDGB.",
+  "row_anchor_source": "`row_anchors` curated 2026-07-25 against real table rows in the company_documents corpus (verified in BANK-BCA and BANK-MANDIRI, whose structure is shared across the 21 reports). These reports are EDGB-indexed, not GRI-indexed, so a GRI code has no literal match in them; the anchors name the row that actually carries the answer. Two idioms occur and both are used here. (1) EDGB coded rows, where the code sits on the value row: `| E-02 | GHG Emissions Intensity | ... | 1,37 |`, `| E-03 | Electricity Consumption | ... | 193.043.553 |`, `| E-05 | Waste Generation | ... | 0 |`. (2) Uncoded labelled rows in the emissions table, which is a separate chunk from the `E-01 Greenhouse Gas (GHG) Emission Report` block — E-01's own block holds only report metadata (consolidation, organizational boundaries, subsidiaries), so E-01 is NOT a usable anchor for the scope figures; the figures sit under labels like `Total Direct Emissions (Scope 1)` and `Total Indirect Emissions (Scope 2)`. GRI 305-5 takes two anchors because its definition spans two EDGB indicators: E-07 (`Does the Company commit to reducing GHG emission?` with a % / tCO2e target and target year — Mandiri: Ya, 26%, 200.000 tCO2e, 2030; BCA: Tidak, 0%, null) is the primary reduction-target indicator, and E-06 covers the 'including any net-zero target and its target year' clause. This is a superset of the E-06→GRI 305-5 mapping already noted in company_metrics.json, not a contradiction. Social and governance checklists are not yet anchored — curated incrementally by category, per CLAUDE.md.",
+  "items": [
+    {
+      "code": "GRI 305-1",
+      "description": "Direct (Scope 1) GHG emissions: gross direct greenhouse gas emissions, in tCO2e, from sources owned or controlled by the bank (e.g. fuel combustion in its own facilities and vehicles).",
+      "topic_keywords": ["scope 1 emissions", "direct emissions", "greenhouse gas emissions", "emisi langsung", "tCO2e"],
+      "row_anchors": ["Total Direct Emissions (Scope 1)", "Category 1: Direct GHG emissions and removals"]
+    },
+    {
+      "code": "GRI 305-2",
+      "description": "Energy indirect (Scope 2) GHG emissions: gross indirect greenhouse gas emissions, in tCO2e, from the generation of purchased electricity, steam, heating, or cooling consumed by the bank.",
+      "topic_keywords": ["scope 2 emissions", "energy indirect emissions", "purchased electricity emissions", "emisi tidak langsung energi", "tCO2e"],
+      "row_anchors": ["Total Indirect Emissions (Scope 2)", "Category 2: Indirect GHG emissions from imported energy"]
+    },
+    {
+      "code": "GRI 305-3",
+      "description": "Other indirect (Scope 3) GHG emissions: gross other indirect greenhouse gas emissions across the bank's value chain; for banks this is dominated by financed emissions (the emissions of lending and investment portfolios).",
+      "topic_keywords": ["scope 3 emissions", "other indirect emissions", "value chain emissions", "financed emissions", "emisi rantai nilai", "emisi pembiayaan"],
+      "row_anchors": [],
+      "directly_disclosed": false
+    },
+    {
+      "code": "GRI 305-4",
+      "description": "GHG emissions intensity: greenhouse gas emissions (typically Scope 1 and Scope 2) normalized against a business metric such as revenue.",
+      "topic_keywords": ["emissions intensity", "GHG emission intensity", "carbon intensity", "intensitas emisi"],
+      "row_anchors": ["E-02"]
+    },
+    {
+      "code": "GRI 305-5",
+      "description": "Reduction of GHG emissions: the bank's emissions-reduction targets and commitments, including any net-zero target and its target year, and reductions achieved.",
+      "topic_keywords": ["emissions reduction", "net zero", "net-zero target", "GHG reduction target", "target pengurangan emisi", "dekarbonisasi"],
+      "row_anchors": ["E-07", "E-06"]
+    },
+    {
+      "code": "GRI 302-1",
+      "description": "Energy consumption within the organization: total energy consumed by the bank's own operations, including electricity consumed directly and indirectly.",
+      "topic_keywords": ["energy consumption", "electricity consumption", "energy use within the organization", "konsumsi energi", "konsumsi listrik"],
+      "row_anchors": ["E-03"]
+    },
+    {
+      "code": "GRI 306-3",
+      "description": "Waste generated: total weight of waste generated by the bank's operations, broken down by hazardous and non-hazardous type.",
+      "topic_keywords": ["waste generated", "total waste", "hazardous waste", "non-hazardous waste", "limbah", "limbah B3"],
+      "row_anchors": ["E-05"]
+    }
+  ]
+}

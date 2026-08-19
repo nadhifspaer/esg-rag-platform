@@ -1,0 +1,952 @@
+{
+  "name": "esg_rag_eval_set",
+  "version": "0.1-draft",
+  "captured": "2026-07-28",
+  "description": "Stage 8 evaluation set. One entry per question, carrying the expected routing decision, the source document(s) retrieval must surface, and a ground-truth answer. Scores three things that are currently conflated: routing (did the classifier pick the right query_type and domains), retrieval (did the expected source land in the top-k), and answer correctness (does the answer state the disclosed value).",
+  "provenance": "EVERY ground_truth value in the company_documents entries was read off a real chunk in the live Qdrant collection (esg_documents, 1823 chunks) on 2026-07-28 via a read-only scroll, using the same anchor-leads-the-first-cell rule as compliance/anchors.py so index rows (whose last cell is a page number) are never mistaken for value rows. Net-zero entries are read from tests/fixtures/e06_live.json, itself real pipeline output. Standards and regulations ground truth is quoted from the chunk text cited in each entry. Nothing here is recalled from documentation or inferred — a fabricated figure attributed to a named bank is the worst failure this project has, and an eval set is the last place it may enter.",
+  "scoring_notes": {
+    "expected_sources": "source_contains is matched case-insensitively against a result's source_name (the citation label from ingestion/payload_builder.py). page_number is the page the value actually sits on, recorded so retrieval can later be scored at page granularity rather than document granularity.",
+    "ground_truth_values": "Exact strings as the report writes them, original decimal mark included (BCA's E-02 is \"1,37\", not 1.37). Answer-correctness scoring must compare against these verbatim; normalising here would add a second place a digit can change, the same risk the table/vision split exists to remove.",
+    "expected_answer_shape": "Some items are correct only if the system declines to give a figure. Those carry expected_answer_shape=absence, and an answer that supplies a number is WRONG even if the number appears somewhere in the corpus.",
+    "match_mode": "How ground_truth_values are combined. 'all' (the default) requires every value — use for genuine conjuncts like BNI's 2028 AND 2060, where a partial answer misstates the bank. 'any' requires at least one — use for alternatives such as 'eight'/'delapan' or a value with and without its inline unit, where requiring all of them fails a correct answer for writing it one valid way. 'none' inverts it: every value is a FORBIDDEN string and the answer passes only if it contains none, which is how the partial_evidence shape scores overclaiming. The distinction was added 2026-07-28 after a full run failed several entries purely because alternatives were being scored as conjuncts."
+  },
+  "open_todo": "45 questions, inside the 30-50 target. Every entry is verified against a real chunk, a live sweep, or a committed live fixture — there are no placeholders and no values recalled from documentation. Still to do: merge in the developer's own questions if any are still coming, and build a runner. The runner is the real blocker: retrieval_eval.py scores document-level top-5 hits only and cannot consume expected_sources[].page_number, ground_truth_values, expected_answer_shape, or the turns[] array on mt-001. Two scoring requirements a runner must honour or the set measures the wrong thing: (1) a refusal is a PASS, and the three refusal reasons are distinct — cc-003 coded_numeric_requirement/metrics, cc-004 unverified_ranking_output/none, cc-005 not_directly_disclosed/none — so returning the wrong reason must fail even though it is also a refusal; (2) mt-001 is KNOWN-FAILING on retrieval while expected to PASS on routing, so routing and retrieval must be scored separately or it reads as a routing bug. Coverage is deliberately uneven: the corpus is disclosure-index content, so weighting the set toward narrative questions would score the corpus rather than the pipeline. OPEN, NOT RESOLVED IN THIS PASS: cd-014 and cd-019 were corrected on 2026-07-28 after a live run showed both banks DO disclose Scope 3 as an ISO 14064 category breakdown (BCA p.12 summing to 144.184; Mandiri p.13 summing to 20.327.453). That finding challenges GRI 305-3's curated directly_disclosed=False, which drives cc-005's expected 'not_directly_disclosed' refusal and the 2026-07-25 anchoring table's '21 not directly disclosed'. Whether the category breakdown should count as GRI 305-3 being disclosed needs its own corpus-wide check across the other 19 banks, its own architecture.md entry, and a curation decision. Until then cc-005 still encodes the CURRENT behaviour, which may itself be what changes.",
+  "questions": [
+    {
+      "id": "cd-001",
+      "question": "What does BCA report for Scope 1 emissions?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Central Asia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Central Asia",
+          "page_number": 11
+        }
+      ],
+      "ground_truth": "BCA reports total direct (Scope 1) emissions of 6.032 tCO2e.",
+      "ground_truth_values": [
+        "6.032"
+      ],
+      "provenance": "| Total Direct Emissions (Scope 1) | 6.032 | — Bank Central Asia, p.11, content_type=table",
+      "note": "The query from the BCA Scope 1 investigation (architecture.md 2026-07-25). It answered from another bank's report before three separate fixes landed, and still resolves via the retry loop's rewrite rather than by design — a regression here is expected to be the first thing Option A would fix."
+    },
+    {
+      "id": "cd-002",
+      "question": "What are Bank Mandiri's total direct Scope 1 emissions?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Mandiri (Persero) Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Mandiri",
+          "page_number": 12
+        }
+      ],
+      "ground_truth": "Bank Mandiri reports total direct (Scope 1) emissions of 52.816 tCO2e.",
+      "ground_truth_values": [
+        "52.816"
+      ],
+      "provenance": "| Total Direct Emissions (Scope 1) | 52.816 | — Bank Mandiri, p.12, content_type=table"
+    },
+    {
+      "id": "cd-003",
+      "question": "How much indirect Scope 2 emissions did Bank Raya report?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Raya Indonesia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Raya",
+          "page_number": 12
+        }
+      ],
+      "ground_truth": "Bank Raya reports total indirect (Scope 2) emissions of 655 tCO2e.",
+      "ground_truth_values": [
+        "655"
+      ],
+      "provenance": "| Total Indirect Emissions (Scope 2) | 655 | — Bank Raya Indonesia, p.12, content_type=table | 2026-07-28 CORRECTED ENTITY: this document was ingested under the wrong company. Its cover reads 'PT Bank Raya Indonesia Tbk' (ticker AGRO); the manifest recorded it as PT Bank Rakyat Indonesia (Persero) Tbk. The figure and page are unchanged and were re-verified live after re-ingestion — only the attributed entity changed. The real BRI (BBRI) is not in this corpus.",
+      "note": "Bank Raya's Scope 2 (655) is smaller than its Scope 1 (1.431), which is unusual for a bank and makes a swapped-row error visible rather than plausible."
+    },
+    {
+      "id": "cd-004",
+      "question": "How much waste did BCA generate?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Central Asia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Central Asia",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "BCA reports total waste generated of 0 tons.",
+      "ground_truth_values": [
+        "0"
+      ],
+      "provenance": "| E-05 | Waste Generation | Total waste generated (ton) | 0 | — Bank Central Asia, p.13, content_type=table",
+      "note": "Zero is a real disclosure here, not a missing value. An answer of 'not disclosed' is WRONG. This is the second query from the 2026-07-25 investigation and the one whose E-05 row is lost at RRF fusion truncation."
+    },
+    {
+      "id": "cd-005",
+      "question": "Berapa total limbah yang dihasilkan Bank Aladin Syariah?",
+      "lang": "id",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Aladin Syariah Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Aladin",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "Bank Aladin Syariah melaporkan total limbah yang dihasilkan sebesar 2.452,92 ton.",
+      "ground_truth_values": [
+        "2.452,92"
+      ],
+      "provenance": "| E-05 | Waste Generation | Total waste generated (ton) | 2.452,92 | — Bank Aladin Syariah, p.13, content_type=table",
+      "note": "Indonesian-language question against a bilingual corpus; the E-05 row exists in both languages. Tests that the multilingual cross-encoder is doing its job."
+    },
+    {
+      "id": "cd-006",
+      "question": "What is BCA's total electricity consumption?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Central Asia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Central Asia",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "BCA reports total electricity consumption of 193.043.553 kWh.",
+      "ground_truth_values": [
+        "193.043.553"
+      ],
+      "provenance": "| E-03 | Electricity Consumption | Total amount of energy directly consumed (kWh or J) | 193.043.553 | — Bank Central Asia, p.13, content_type=table"
+    },
+    {
+      "id": "cd-007",
+      "question": "What is Bank Raya's GHG emissions intensity?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Raya Indonesia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Raya",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "Bank Raya reports a GHG emissions intensity of 0,0018 (total Scope 1 and 2 emissions per unit of revenue).",
+      "ground_truth_values": [
+        "0,0018"
+      ],
+      "provenance": "| E-02 | GHG Emissions Intensity | Total scope 1 and 2 emissions produced per revenue of listed compant (tCO2e/Rp) | 0,0018 | — Bank Raya Indonesia, p.13, content_type=table | 2026-07-28 CORRECTED ENTITY: this document was ingested under the wrong company. Its cover reads 'PT Bank Raya Indonesia Tbk' (ticker AGRO); the manifest recorded it as PT Bank Rakyat Indonesia (Persero) Tbk. The figure and page are unchanged and were re-verified live after re-ingestion — only the attributed entity changed. The real BRI (BBRI) is not in this corpus."
+    },
+    {
+      "id": "cd-008",
+      "question": "What is Bank Mega's emissions intensity figure?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Mega Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Mega",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "Bank Mega reports a GHG emissions intensity of 1,58.",
+      "ground_truth_values": [
+        "1,58"
+      ],
+      "provenance": "| E-02 | GHG Emissions Intensity | ... | 1,58 | — Bank Mega, p.13, content_type=table",
+      "note": "'Mega' is an alias that must match whole-token only — entity_index denylists substring matching so it cannot fire inside 'megawatt'."
+    },
+    {
+      "id": "cd-009",
+      "question": "What is Bank Jago's Scope 1 emissions figure?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Jago Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Jago",
+          "page_number": 12
+        }
+      ],
+      "ground_truth": "Bank Jago reports total direct (Scope 1) emissions of 15,18 tCO2e.",
+      "ground_truth_values": [
+        "15,18"
+      ],
+      "provenance": "| Total Direct Emissions (Scope 1) | 15,18 | — Bank Jago, p.12, content_type=table"
+    },
+    {
+      "id": "cd-010",
+      "question": "How much waste did Bank Nationalnobu generate?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Nationalnobu Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Nationalnobu",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "Bank Nationalnobu reports total waste generated of 8 tons.",
+      "ground_truth_values": [
+        "8"
+      ],
+      "provenance": "| E-05 | Waste Generation | Total waste generated (ton) | 8 | — Bank Nationalnobu, p.13, content_type=table"
+    },
+    {
+      "id": "cd-011",
+      "question": "What is BCA's net zero emission target year?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Central Asia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Central Asia",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "BCA's net zero emission target year is 2060.",
+      "ground_truth_values": [
+        "2060"
+      ],
+      "provenance": "tests/fixtures/e06_live.json — BCA, status=disclosed, value 2060, cited to p.13 (table). Real Stage 6.5.3+6.5.4 output captured 2026-07-25."
+    },
+    {
+      "id": "cd-012",
+      "question": "What is BNI's net zero target year?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Negara Indonesia (Persero) Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Negara Indonesia",
+          "page_number": 3
+        }
+      ],
+      "ground_truth": "BNI discloses two differently-scoped net-zero target years: 2028 for Operational Net Zero Emission, and 2060 for Financed Emissions Net Zero. A correct answer must give both with their scopes.",
+      "ground_truth_values": [
+        "2028",
+        "2060"
+      ],
+      "expected_answer_shape": "multi_value",
+      "provenance": "tests/fixtures/e06_live.json — BNI, status=multiple_disclosed, values 2028 (Operational Net Zero Emission) and 2060 (Financed Emissions Net Zero), cited to p.3 (table).",
+      "note": "The load-bearing honesty case. An answer giving only 2028 is WRONG: that covers operations alone, not financed emissions, and printed beside another bank's whole-footprint 2050 it reads as BNI being 22 years more ambitious. 4 of 21 banks are in this state."
+    },
+    {
+      "id": "cd-013",
+      "question": "Does Bank Jago have a net zero emission target?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Jago Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Jago",
+          "page_number": 14
+        }
+      ],
+      "ground_truth": "No. Bank Jago's report states it does not have a net zero emission target commitment, and publishes no target year.",
+      "ground_truth_values": [],
+      "expected_answer_shape": "negative_disclosure",
+      "provenance": "tests/fixtures/e06_live.json — Jago, status=not_disclosed, note: 'The company does not have a net zero emission target commitment; no target year is published.', cited to p.14 (table).",
+      "note": "Distinct from expected_answer_shape=absence: the SOURCE gave an answer ('no'), so a report of that answer is correct and complete. The groundedness judge must NOT treat this as insufficient — this is the counter-rule that keeps defect 3's absence-detection fix from over-firing."
+    },
+    {
+      "id": "cd-014",
+      "question": "What are BCA's Scope 3 emissions?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Central Asia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Central Asia",
+          "page_number": 12
+        }
+      ],
+      "ground_truth": "BCA DOES disclose Scope 3, as a full ISO 14064 category breakdown on p.12: Business travels 9.854, Energy-related activities not included in direct/indirect 22.451, Purchased goods and services 67.667, Capital equipment/goods 6.793, Waste generated in operations 2.321, Upstream leased assets 34.491, End-of-life treatment of sold products 607, with the remaining categories zero. These sum to 144.184. What the report does NOT carry is a correctly-labelled Scope 3 TOTAL row: the row holding 144.184 is labelled 'Total GHG Emissions (Scope 1 and 2)'. A correct answer reports the disclosed category figures; it must not report 144.184 as the bank's Scope 1+2 total (which is 153.883).",
+      "ground_truth_values": [
+        "9.854",
+        "67.667",
+        "34.491"
+      ],
+      "expected_answer_shape": "disclosed_not_totalled",
+      "provenance": "Verified live 2026-07-28 by corpus scan of BCA chunks. English p.12 carries 'Category 3: Indirect GHG emissions from transportation' with | Business travels | 9.854 |, 'Category 4' with | Purchased goods and services | 67.667 | and | Upstream leased assets | 34.491 |, 'Category 5' with | End of life treatment of sold products | 607 |; Indonesian p.2 carries the same rows. The disclosed categories sum to exactly 144.184, which is the value the p.13 row mislabels as 'Total GHG Emissions (Scope 1 and 2)'. BCA's real Scope 1+2 is 6.032 + 147.851 = 153.883. | 2026-07-28: expected_sources page corrected to p.12 — the entry was rewritten around the category breakdown but still pointed at the old total-row page, so retrieval was scored against a page the ground truth no longer uses.",
+      "note": "CORRECTED 2026-07-28 after the eval runner's first live run refuted the original entry. This was written as expected_answer_shape='absence' on the claim that 'BCA's report does not carry a Scope 3 row'. That claim was WRONG: the model answered with the full category breakdown, cited to p.12, inventing nothing — and a corpus scan confirmed every figure. The trap is real but it is a LABEL COLLISION, not an absence: the Scope 3 total exists and is disclosed by its parts, while the row carrying that total is mislabelled Scope 1+2. Note this independently confirms the mislabel diagnosis, since the disclosed categories sum to exactly the mislabelled row's value. OPEN QUESTION, deliberately not resolved here: GRI 305-3 is curated directly_disclosed=False on the premise that nothing in this corpus answers it. This finding challenges that premise, and it drives cc-005's expected refusal and the 2026-07-25 anchoring table's '21 not directly disclosed'. Scoped as its own investigation and curation decision, NOT changed as part of the eval-runner pass."
+    },
+    {
+      "id": "cd-015",
+      "question": "What is Bank Panin Dubai Syariah's GHG emissions intensity?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Panin Dubai Syariah Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Panin Dubai Syariah",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "The report states 5.813. The value must be quoted exactly as written; under this corpus's convention a lone dot before exactly three digits is genuinely ambiguous (5813 under the thousands convention, 5.813 as a decimal), so the figure must not be silently normalised to either reading.",
+      "ground_truth_values": [
+        "5.813"
+      ],
+      "expected_answer_shape": "verbatim",
+      "provenance": "| E-02 | GHG Emissions Intensity | ... | 5.813 | — Bank Panin Dubai Syariah, p.13, content_type=table",
+      "note": "The real value behind analysis.py's explicit 'unparseable' refusal. Guessing here is a 1000x error on an emissions figure. Scores verbatim fidelity, not arithmetic."
+    },
+    {
+      "id": "cd-016",
+      "question": "What is CIMB Niaga's electricity consumption?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank CIMB Niaga Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "CIMB Niaga",
+          "page_number": 14
+        }
+      ],
+      "ground_truth": "CIMB Niaga's report states 24.427.940.402.863 for total energy directly consumed (kWh or J).",
+      "ground_truth_values": [
+        "24.427.940.402.863"
+      ],
+      "expected_answer_shape": "source_oddity",
+      "provenance": "| E-03 | Electricity Consumption | Total amount of energy directly consumed (kWh or J) | 24.427.940.402.863 | — CIMB Niaga, p.14, content_type=table",
+      "note": "The figure is implausible as kWh (~24 trillion) and is most likely reported in joules or is a source-side error. The correct behaviour is to report what the document says with its unit label, NOT to silently correct or reject it. Scores whether the system editorialises over a source oddity."
+    },
+    {
+      "id": "cd-017",
+      "question": "What is Bank Mestika Dharma's average training hours per employee?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Mestika Dharma Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Mestika",
+          "page_number": 15
+        }
+      ],
+      "ground_truth": "Bank Mestika Dharma reports average training hours per employee as 0 hours/employee. This is a disclosed value, not a missing one.",
+      "ground_truth_values": [
+        "0 hours/employee",
+        "0"
+      ],
+      "expected_answer_shape": "plain_value",
+      "provenance": "tests/fixtures/s05_live.json — Bank Mestika Dharma, metric S-05, status=disclosed, values [{value: '0 hours/employee', label: null}], citation 'PT Bank Mestika Dharma Tbk — 2025 Sustainability Report, p. 15 (table)', retrieval top_score 0.7577, fallback_used false. Real Stage 6.5.3+6.5.4 output captured 2026-07-25.",
+      "note": "The only social-domain entry, and it earns its place twice over. It is a zero-that-is-a-real-disclosure (like cd-004), so an answer of 'not disclosed' is WRONG. And the value carries its unit inline — 4 of 21 banks report S-05 this way ('47 hours/employee'), which the number parser must strip to get a quantity. Both accepted forms are listed in ground_truth_values so the answer may quote the unit or not, but must not report absence.",
+      "match_mode": "any"
+    },
+    {
+      "id": "cd-018",
+      "question": "Which banks have the earliest net-zero target year?",
+      "lang": "en",
+      "expected_query_type": "aggregation_ranking",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": null,
+      "expected_sources": [],
+      "ground_truth": "Ranked by earliest disclosed single-value target, Bank Aladin Syariah leads with 2040. Four banks disclosing two differently-scoped years (BNI 2028/2060, Mandiri 2030/2060, CIMB Niaga 2030/2050, SMBC 2030/2050) must be held out as ambiguous rather than ranked on their operations-only year, and seven banks disclosing no target must be excluded. All 21 banks must be accounted for.",
+      "ground_truth_values": [
+        "2040"
+      ],
+      "expected_answer_shape": "ranked_with_segregation",
+      "provenance": "tests/fixtures/e06_live.json — status_counts {disclosed: 10, multiple_disclosed: 4, not_disclosed: 7}, bank_count 21.",
+      "note": "Routes to /rank, not /chat. A naive earliest-first ranking returns the four multi-scope banks at the top, making the most careful disclosers look the most ambitious. That inversion is the failure this item scores."
+    },
+    {
+      "id": "st-001",
+      "question": "Which GRI disclosures does the EDGB E-01 greenhouse gas emission metric map to?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "standards"
+      ],
+      "expected_scoped_to": null,
+      "expected_sources": [
+        {
+          "source_contains": "ESG Disclosure Guide Book",
+          "page_number": 20
+        }
+      ],
+      "ground_truth": "E-01 Greenhouse Gas Emission maps to GRI 305-1, 305-2 and 305-3, and also references SASB, CDP and WFE E1.",
+      "ground_truth_values": [
+        "GRI 305-1,2,3",
+        "GRI 305-1, 305-2 and 305-3",
+        "GRI 305-1, 305-2, and 305-3",
+        "GRI 305-1, GRI 305-2",
+        "305-1, 305-2"
+      ],
+      "provenance": "'ESG Metrics Environmental Performance E-01. Greenhouse Gas Emission GRI 305-1,2,3, SASB, CDP, WFE E1' — ESG Disclosure Guide Book, p.20 | 2026-07-28: was a single exact string 'GRI 305-1,2,3'. It passed one full run and failed the next on identical input, purely because the answer wrote the codes out longhand. Loosened to accepted renderings of the same mapping, match_mode=any.",
+      "note": "The EDGB-to-GRI bridge the compliance pipeline needs and does not carry on ChecklistItem. Tests exact-code retrieval, which is the BM25 leg's job.",
+      "match_mode": "any"
+    },
+    {
+      "id": "st-002",
+      "question": "Under GRI 3, what is the sole criterion for deciding whether a topic is material?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "standards"
+      ],
+      "expected_scoped_to": null,
+      "expected_sources": [
+        {
+          "source_contains": "GRI 3",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "The significance of the impact is the sole criterion for determining whether a topic is material for reporting.",
+      "ground_truth_values": [
+        "significance of an impact"
+      ],
+      "provenance": "'The significance of an impact is the sole criterion to determine whether a topic is material for reporting.' — GRI 3: Material Topics, p.13"
+    },
+    {
+      "id": "st-003",
+      "question": "What does GRI 2-4 require an organization to report about restatements?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "standards"
+      ],
+      "expected_scoped_to": null,
+      "expected_sources": [
+        {
+          "source_contains": "GRI 2",
+          "page_number": 11
+        }
+      ],
+      "ground_truth": "Disclosure 2-4 requires the organization to report restatements of information made from previous reporting periods, explaining both the reasons for the restatements and their effect.",
+      "ground_truth_values": [
+        "reasons for the restatements",
+        "the effect of the restatements"
+      ],
+      "provenance": "'Disclosure 2-4 Restatements of information ... report restatements of information made from previous reporting periods and explain: i. the reasons for the restatements; ii. the effect of the restatements.' — GRI 2: General Disclosures, p.11",
+      "note": "'GRI 2-4' must not match 'GRI 2' generically nor collide with GRI 3. Whole-token matching is what keeps 'GRI 3' from firing inside 'GRI 305'."
+    },
+    {
+      "id": "st-004",
+      "question": "When may an organization use 'confidentiality constraints' as a reason for omitting information under GRI 1?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "standards"
+      ],
+      "expected_scoped_to": null,
+      "expected_sources": [
+        {
+          "source_contains": "GRI 1",
+          "page_number": 16
+        }
+      ],
+      "ground_truth": "Only in exceptional cases. GRI 1 states that 'confidentiality constraints' and 'information unavailable / incomplete' should only be used in exceptional cases, because using them frequently reduces the credibility and usefulness of the reporting.",
+      "ground_truth_values": [
+        "exceptional cases"
+      ],
+      "provenance": "'The reasons \"confidentiality constraints\" and \"information unavailable / incomplete\" should only be used in exceptional cases.' — GRI 1: Foundation, p.16"
+    },
+    {
+      "id": "st-005",
+      "question": "Under GRI 3, does an organization's value chain include its supply chain?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "standards"
+      ],
+      "expected_scoped_to": null,
+      "expected_sources": [
+        {
+          "source_contains": "GRI 3",
+          "page_number": 28
+        }
+      ],
+      "ground_truth": "Yes. GRI 3 states that the value chain includes the supply chain.",
+      "ground_truth_values": [
+        "includes the supply chain",
+        "value chain includes",
+        "supply chain is part"
+      ],
+      "provenance": "'Note 2: The value chain includes the supply chain.' — GRI 3: Material Topics, p.28 | 2026-07-28: was an exact-sentence match, which paraphrase defeats. Loosened to accepted phrasings of the same assertion, match_mode=any.",
+      "match_mode": "any"
+    },
+    {
+      "id": "xd-001",
+      "question": "How does BCA's Scope 1 disclosure compare with what GRI 305-1 requires?",
+      "lang": "en",
+      "expected_query_type": "cross_domain",
+      "expected_domains": [
+        "company_documents",
+        "standards"
+      ],
+      "expected_scoped_to": "PT Bank Central Asia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Central Asia",
+          "page_number": 11
+        },
+        {
+          "source_contains": "ESG Disclosure Guide Book",
+          "page_number": 20
+        }
+      ],
+      "ground_truth": "BCA discloses total direct (Scope 1) emissions of 6.032 tCO2e. GRI 305-1 covers direct GHG emissions from sources owned or controlled by the organization; the EDGB E-01 metric that BCA's table is keyed to maps to GRI 305-1,2,3. A correct answer draws the company figure and the standard's requirement from different domains and does not conflate them.",
+      "ground_truth_values": [
+        "6.032"
+      ],
+      "provenance": "BCA p.11 table row; EDGB p.20 mapping.",
+      "note": "The cross-domain failure this project is designed against is a standard's definition of a term ranking near a company's reported number for it. Scoring must check that BOTH domains appear in the citations, not just that the number is right."
+    },
+    {
+      "id": "xd-003",
+      "question": "What does the EDGB say electricity consumption should measure, and what does BCA report for it?",
+      "lang": "en",
+      "expected_query_type": "cross_domain",
+      "expected_domains": [
+        "company_documents",
+        "standards"
+      ],
+      "expected_scoped_to": "PT Bank Central Asia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "ESG Disclosure Guide Book",
+          "page_number": null
+        },
+        {
+          "source_contains": "Bank Central Asia",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "The EDGB E-03 metric is the total amount of energy directly consumed, measured in kWh or J. BCA reports 193.043.553 for that row.",
+      "ground_truth_values": [
+        "193.043.553"
+      ],
+      "provenance": "BCA p.13 E-03 row (which carries the EDGB definition text inline); EDGB standards document for the metric definition."
+    },
+    {
+      "id": "cc-001",
+      "question": "Does BCA's sustainability report meet GRI 305?",
+      "lang": "en",
+      "expected_query_type": "compliance_check",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Central Asia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Central Asia",
+          "page_number": null
+        }
+      ],
+      "ground_truth": "Every GRI 305 requirement must be enumerated from the curated checklist, not retrieved. Expected statuses: 305-1 addressed (Scope 1 row present, 6.032), 305-2 addressed (Scope 2 row present, 147.851), 305-3 NOT DIRECTLY DISCLOSED (no Scope 3 row exists in this corpus), 305-4 addressed (E-02, 1,37), 305-5 addressed (E-07/E-06 block present). The answer must carry the automated-aid disclaimer and the note that 'addressed' does not mean favourable.",
+      "ground_truth_values": [
+        "not directly disclosed"
+      ],
+      "expected_answer_shape": "compliance_table",
+      "target_requirement": "GRI 305",
+      "provenance": "Verified live per-row for BCA (p.11, p.12, p.13); GRI 305-3 is curated directly_disclosed=false.",
+      "note": "Scores COVERAGE first: a silently omitted requirement is a correctness bug. 305-3 must come back 'not directly disclosed', never 'not found' (which reads as an accusation) and never 'addressed' (which was the pre-anchoring false result)."
+    },
+    {
+      "id": "cc-002",
+      "question": "Does Bank Jago's report address GRI 302-1 energy consumption?",
+      "lang": "en",
+      "expected_query_type": "compliance_check",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Jago Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Jago",
+          "page_number": 14
+        }
+      ],
+      "ground_truth": "Addressed. Bank Jago's E-03 electricity consumption row is present and reports 210.980.820.000. 'Addressed' records that the report speaks to the topic, not that the figure is favourable or plausible.",
+      "ground_truth_values": [
+        "210.980.820.000"
+      ],
+      "expected_answer_shape": "compliance_table",
+      "target_requirement": "GRI 302-1",
+      "provenance": "| E-03 | Electricity Consumption | ... | 210.980.820.000 | — Bank Jago, p.14, content_type=table"
+    },
+    {
+      "id": "cc-003",
+      "question": "Which banks are compliant with GRI 305-4?",
+      "lang": "en",
+      "expected_query_type": "aggregation_ranking",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": null,
+      "expected_sources": [],
+      "ground_truth": "The system must REFUSE to rank. GRI 305-4 carries row anchors (E-02), so its compliance status is uniform across all 21 banks by construction — every listed bank files the EDGB template with the row present. The correct response routes to the metrics pipeline, which compares the row's values, rather than emitting a ranking of a uniform status.",
+      "ground_truth_values": [
+        "route_to: metrics"
+      ],
+      "expected_answer_shape": "refusal",
+      "target_requirement": "GRI 305-4",
+      "provenance": "LIVE CHECK 2026-07-28: ranking_refusal_for_item(GRI 305-4, bank_count=21) against the curated environmental checklist returned reason='coded_numeric_requirement', route_to='metrics', for an item carrying row_anchors=('E-02',) and directly_disclosed=True. Refusal message returned verbatim: 'GRI 305-4 is answered by a coded disclosure-index row that every bank in this corpus files, so a compliance ranking would report all 21 banks identically — that is a real fact about the filings, not a comparison. The figures that separate the banks are in the row's value; use the metric aggregation pipeline to extract and rank those.' The refusal is decided from the curated item before any retrieval, so this check cost zero embeddings and zero Qdrant round-trips. (architecture.md 2026-07-25 records the same behaviour; this entry no longer rests on that record alone.)",
+      "note": "A refusal is the CORRECT answer and must be scored as a pass, not a failure. Aggregation intent must also outrank compliance intent here — this query carries both marker sets, and routing it to the compliance pipeline (which resolves exactly one company) would be a structural failure."
+    },
+    {
+      "id": "cd-019",
+      "question": "What are Bank Mandiri's Scope 3 emissions?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Mandiri (Persero) Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Mandiri",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "Mandiri DOES disclose Scope 3 as an ISO 14064 category breakdown on p.13: Business travels 4.440, Purchased goods and services 431, and Investments 20.322.582, with the remaining categories zero. These sum to 20.327.453. What the report does NOT carry is a correctly-labelled Scope 3 TOTAL row: p.14 shows two rows both labelled 'Total GHG Emissions (Scope 1 and 2)', holding 20.327.453 and 243.736. A correct answer reports the disclosed category figures and must not report 20.327.453 as Mandiri's Scope 1+2 total (which is 243.736).",
+      "ground_truth_values": [
+        "4.440",
+        "20.322.582"
+      ],
+      "expected_answer_shape": "disclosed_not_totalled",
+      "provenance": "Verified live 2026-07-28 by corpus scan of Mandiri chunks. English p.13: | Business travels | 4.440 |, | Purchased goods and services | 431 |, Category 5 | Investments | 20.322.582 |; Indonesian p.2 carries the same rows (| Perjalanan dinas | 4.440 |, | Pembelian Barang dan Jasa | 431 |, | Investasi | 20.322.582 |). Those sum to exactly 20.327.453, the value the English p.14 row mislabels as 'Total GHG Emissions (Scope 1 and 2)' and the Indonesian p.3 row correctly labels 'Total Emisi Tidak Langsung (Scope 3)'. Mandiri's real Scope 1+2 is 52.816 + 190.920 = 243.736. | 2026-07-28: expected_sources page corrected to p.13 — the entry was rewritten around the category breakdown but still pointed at the old total-row page, so retrieval was scored against a page the ground truth no longer uses.",
+      "note": "CORRECTED 2026-07-28, same refutation as cd-014: the original 'absence' framing was wrong for Mandiri too. Mandiri is the STRONGEST case in the corpus, because three independent lines of evidence agree on which row is mislabelled: the Indonesian twin labels 20.327.453 as Scope 3 outright, the disclosed categories sum to exactly 20.327.453, and 243.736 equals the bank's own Scope 1 + Scope 2. The label collision is systemic — 20 of 21 banks carry two rows sharing 'Total GHG Emissions (Scope 1 and 2)' with different values (only SMBC is clean). Neither language version is trustworthy in general: Bank Raya's Indonesian page labels 655 as Scope 3 while its own totals give 1.222.299 - 2.086 = 1.220.213 (this counter-example was published as 'BRI' until 2026-07-28; the document is Bank Raya Indonesia's, and the arithmetic is unchanged). Same OPEN QUESTION as cd-014 regarding GRI 305-3's directly_disclosed=False curation; not resolved here."
+    },
+    {
+      "id": "cd-020",
+      "question": "how much trash does Bank Raya make",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Raya Indonesia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Raya",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "Bank Raya reports total waste generated of 3,63 tons.",
+      "ground_truth_values": [
+        "3,63"
+      ],
+      "provenance": "| E-05 | Waste Generation | Total waste generated (ton) | 3,63 | — Bank Raya Indonesia, p.13, content_type=table | 2026-07-28 CORRECTED ENTITY: this document was ingested under the wrong company. Its cover reads 'PT Bank Raya Indonesia Tbk' (ticker AGRO); the manifest recorded it as PT Bank Rakyat Indonesia (Persero) Tbk. The figure and page are unchanged and were re-verified live after re-ingestion — only the attributed entity changed. The real BRI (BBRI) is not in this corpus.",
+      "note": "Deliberately vocabulary-poor: 'trash' and 'make' appear nowhere in the corpus, which writes 'Waste Generation' and 'Limbah yang dihasilkan'. Ungrammatical and unpunctuated on purpose. The 2026-07-26 measurement found that what separates a hit from a miss on this corpus is literal corpus vocabulary rather than standalone-ness, so this scores the dense leg's ability to bridge a vocabulary gap the keyword leg cannot."
+    },
+    {
+      "id": "cd-021",
+      "question": "mandiri power usage?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Mandiri (Persero) Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Mandiri",
+          "page_number": 14
+        }
+      ],
+      "ground_truth": "Bank Mandiri reports total electricity consumption of 763.822.000 (kWh or J, as the row is labelled).",
+      "ground_truth_values": [
+        "763.822.000"
+      ],
+      "provenance": "| E-03 | Electricity Consumption | Total amount of energy directly consumed (kWh or J) | 763.822.000 | — Bank Mandiri, p.14, content_type=table",
+      "note": "Terse and vocabulary-poor: 'power usage' against a corpus that says 'Electricity Consumption' / 'Konsumsi Energi listrik'. Three words with no question framing, which is the shape the 2026-07-25 measurement found the retry loop's rewrite lands on by luck rather than design."
+    },
+    {
+      "id": "mt-001",
+      "question": "MULTI-TURN — see turns[]",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Central Asia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Central Asia",
+          "page_number": 11
+        },
+        {
+          "source_contains": "Bank Central Asia",
+          "page_number": 13
+        }
+      ],
+      "ground_truth": "See per-turn ground truth in turns[]. Both turns must stay scoped to BCA.",
+      "ground_truth_values": [
+        "6.032",
+        "0"
+      ],
+      "expected_answer_shape": "multi_turn",
+      "turns": [
+        {
+          "turn": 1,
+          "utterance": "What does BCA report for Scope 1 emissions?",
+          "expected_context_source": "utterance",
+          "expected_scoped_to": "PT Bank Central Asia Tbk",
+          "ground_truth": "BCA reports total direct (Scope 1) emissions of 6.032 tCO2e.",
+          "ground_truth_values": [
+            "6.032"
+          ],
+          "expected_sources": [
+            {
+              "source_contains": "Bank Central Asia",
+              "page_number": 11
+            }
+          ]
+        },
+        {
+          "turn": 2,
+          "utterance": "and their waste?",
+          "expected_context_source": "inherited_entity",
+          "expected_scoped_to": "PT Bank Central Asia Tbk",
+          "ground_truth": "BCA reports total waste generated of 0 tons.",
+          "ground_truth_values": [
+            "0"
+          ],
+          "expected_sources": [
+            {
+              "source_contains": "Bank Central Asia",
+              "page_number": 13
+            }
+          ]
+        }
+      ],
+      "provenance": "Turn 1: | Total Direct Emissions (Scope 1) | 6.032 | — BCA p.11. Turn 2: | E-05 | Waste Generation | Total waste generated (ton) | 0 | — BCA p.13. Both read live 2026-07-28.",
+      "note": "KNOWN-FAILING, and included as a regression target rather than an expected pass. The topic-shift shape is the one of four measured live on 2026-07-26 that failed: 'And waste?' inherited BCA correctly but retrieved no E-05 row (all five candidates scored −6.64 to −8.33) and answered an adjacent question about emissions attributed to waste — real and cited, but not the waste-generation disclosure. Routing is expected to PASS (entity inherited, scope BCA) while retrieval is expected to FAIL, so the two must be scored separately or this entry will be read as a routing bug. Phase 2 condensation was explicitly not built because three of four condenser-plausible phrasings also miss the row; the mechanism that reaches it is anchoring on E-05, i.e. the deferred Option A."
+    },
+    {
+      "id": "cd-022",
+      "question": "Does Bank Artha Graha have a human rights policy?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Artha Graha Internasional Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Artha Graha",
+          "page_number": 17
+        }
+      ],
+      "ground_truth": "Yes. Artha Graha's S-09 row answers 'Does the company has a policy regarding human rights?' with 'Yes', and states the Bank is committed to being an institution responsive to human rights.",
+      "ground_truth_values": [
+        "Yes"
+      ],
+      "provenance": "LIVE 2026-07-28, GRI 412-1 sweep: PT Bank Artha Graha Internasional Tbk, status=disclosed, top_score 0.5929, fallback_used False, cited to p.17 (table). Evidence: '| S-09 Does the company has a policy regarding human rights? | Yes | ... The Bank is committed to being an institution that is responsive to human r…'",
+      "note": "Artha Graha was chosen over the higher-scoring Ganesha (0.6352) deliberately: Ganesha's top evidence for GRI 412-1 is the S-08 harassment/non-discrimination row, not the S-09 human-rights row that actually answers the requirement. Artha Graha's top evidence IS S-09, so this entry has a clean answering row. The Ganesha case is recorded in architecture.md as evidence that a social/governance anchor set would need most-specific-first ordering."
+    },
+    {
+      "id": "cd-023",
+      "question": "What is OCBC NISP's anti-corruption policy?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank OCBC NISP Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "OCBC NISP",
+          "page_number": 17
+        }
+      ],
+      "ground_truth": "OCBC NISP's G-07 row answers 'Does the company has a policy regarding ethics and/or anti-corruption?' with 'Yes', and states the Bank has a Code of Conduct in place that must be adhered to.",
+      "ground_truth_values": [
+        "Code of Conduct",
+        "anti-bribery",
+        "corruption"
+      ],
+      "provenance": "LIVE 2026-07-28, GRI 205-1 sweep across all 21 banks: PT Bank OCBC NISP Tbk, status=disclosed, top_score 0.5110526, fallback_used False, cited to p.17 (table). Evidence: '| G-07 Does the company has a policy regarding ethics and/or anti-corruption? | Yes | ... The Bank has a Code of Conduct in place that must be adhe…' | 2026-07-28: expected the bare word 'Yes', which a correct affirmative paraphrase defeats. Loosened to accept a clearly-affirmative answer naming the policy, match_mode=any — same treatment as st-005. | 2026-07-28: tightened to match_mode=all. The any set passed on 'in place' alone, a fragment carrying no anti-corruption content and satisfiable by an answer about any policy whatsoever. Now requires the named artifact, the topic, and the policy-existence phrase together — all three appear verbatim in the G-07 row. | 2026-07-28 (same day, CORRECTED): those conjuncts were wrong and produced a false failure. The live answer disclosed the policy correctly — 'OCBC NISP has a Code of Conduct that must be adhered to ... the Bank has established an anti-bribery and corruption (ABC) policy' — but matched neither 'anti-corruption' (written as 'anti-bribery and corruption') nor 'has a policy' (written as 'has established a ... policy'). Both conjuncts tested lexical form rather than disclosure. Replaced with 'anti-bribery' + 'corruption', both verbatim in that confirmed-correct answer. 'Code of Conduct' re-added as a third conjunct the same day: it is the named artifact the G-07 row actually cites, it was present in the confirmed answer, and it carries the entry's discrimination — 'corruption' is nearly free because the question itself says 'anti-corruption policy', so without it the test would rest on 'anti-bribery' alone.",
+      "note": "OCBC NISP is the single bank on the minority side of GRI 205-1's 1/20 split. The live sweep reproduced the recorded range exactly (0.4002-0.5111) with OCBC alone at 'disclosed'. Its margin over the 0.50 cut is 0.0111 and the nearest bank below (Maybank) is 0.0028 under, so the split turns on ~0.014 of score — this entry exists partly to catch that flipping. Note the winning evidence is a CODED row (G-07) although GRI 205-1 is curated row_anchors=(): see architecture.md 2026-07-28 for why that is a Stage 8 anchoring candidate and not being acted on here.",
+      "match_mode": "all"
+    },
+    {
+      "id": "cd-024",
+      "question": "Does Bank Mandiri have a policy separating the roles of Chairman of the Board and CEO?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Mandiri (Persero) Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Mandiri",
+          "page_number": 17
+        }
+      ],
+      "ground_truth": "Mandiri's G-03 row answers 'Does the company has a policy regarding separation of the Chairman of the Board and CEO?' with 'Yes', and states Bank Mandiri's governance structure is based on that separation.",
+      "ground_truth_values": [
+        "Chairman of the Board",
+        "has a policy"
+      ],
+      "provenance": "LIVE 2026-07-28, GRI 2-9 sweep: PT Bank Mandiri (Persero) Tbk, status=disclosed, top_score 0.6099, cited to p.17 (table). Evidence: '| G-03 Does the company has a policy regarding separation of the Chairman of the Board and CEO? | Yes | ... Bank Mandiris governance structure is ba…' | 2026-07-28: expected the bare word 'Yes'; loosened to accept an affirmative paraphrase naming the separation of Chairman and CEO, match_mode=any. | 2026-07-28: tightened to match_mode=all. The any set passed on 'governance structure' alone, a phrase almost any governance answer contains regardless of whether it addresses Chairman/CEO separation. Now requires the named role and the policy-existence phrase together, both verbatim in the G-03 row. Deliberately two conjuncts, not three: 'separation' was dropped because this is a CONTROL entry, and a conjunct that fails on ordinary inflection ('separates') would make a failure here ambiguous between a real regression and a phrasing accident — which is exactly the property a control must not have. | 2026-07-28 (same day): the QUESTION was reworded, not the values. It read 'How is Bank Mandiri's board of directors and board of commissioners structured?', which does not ask about Chairman/CEO separation at all — so the live answer described the two-tier Commissioners/Directors structure, answered the question as written perfectly well, and disclosed nothing about G-03. Question and ground truth were misaligned; the tightening exposed it rather than caused it, and under the old match_mode=any it was hidden because the answer opens with the literal words 'governance structure'. The conjuncts are correct for a question that actually asks about G-03, so the question was moved to them.",
+      "note": "CONTROL entry. GRI 2-9's score cluster (0.5491-0.6099, recorded) sits entirely ABOVE the 0.50 band boundary, so it does not straddle and returns a uniform 21/0. It is the counterpart to cd-023's straddling GRI 205-1: if a future assessor change makes this requirement start splitting, that is a signal the change moved the band rather than improved discrimination.",
+      "match_mode": "all"
+    },
+    {
+      "id": "cd-025",
+      "question": "Does BCA have a policy on directors' conflicts of interest?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Central Asia Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Central Asia",
+          "page_number": 17
+        }
+      ],
+      "ground_truth": "Yes. BCA's G-09 row answers 'Does the company have a policy regarding the obligations of directors/commissioners to prevent conflicts of interest?' with 'Yes'.",
+      "ground_truth_values": [
+        "Yes"
+      ],
+      "provenance": "Verified live 2026-07-28 by corpus scan: | G-09 Does the company have a policy regarding the obligations of directors/commissioners to prevent conflicts of interest? | Yes | — PT Bank Central Asia Tbk, p.17, content_type=table, code leading the first cell.",
+      "note": "The coded governance lookup. A scan for S-01..S-09 and G-01..G-11 as FIRST-CELL codes found G-03 through G-09 and S-08/S-09 present, while S-01..S-07 and G-01/G-02 appear only in later cells of index tables (e.g. Mestika's '| Governance | G-01 | Management Diversity and Independence | - |'). That is the same two-idiom split the environmental anchoring work navigates, and it is why the anchor-leads-the-first-cell rule is required rather than a substring check."
+    },
+    {
+      "id": "cd-026",
+      "question": "What is BNI's total Scope 1 emissions?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": "PT Bank Negara Indonesia (Persero) Tbk",
+      "expected_sources": [
+        {
+          "source_contains": "Bank Negara Indonesia",
+          "page_number": 12
+        }
+      ],
+      "ground_truth": "BNI's own listed Scope 1 components sum to 17.776,4 (stationary combustion 1.206,7 + mobile combustion 15.650,6 + processes 0 + fugitive emissions 919,1 + LULUCF 0). The report's own 'Total Direct Emissions (Scope 1)' row states 919,1 instead — identical to the fugitive-emissions line alone, not the sum of all five (docs/architecture.md, 2026-08-11 and 2026-08-13 entries). Both app/rag/ingestion/table_extractor.py's own extraction and an independent pdfplumber read of the raw PDF agree the source itself states 919,1 as the total; this is a source-document defect, not a retrieval or ingestion defect.",
+      "ground_truth_values": [
+        "17.776,4"
+      ],
+      "expected_answer_shape": "plain_value",
+      "expected_divergence": "BNI's own source PDF states its Scope 1 total as 919,1 — a row-substitution defect where the total row duplicates only the fugitive-emissions component instead of summing all five listed components (17.776,4). Per the system-faithfulness principle (architecture.md 2026-08-11), the live chat system is expected to keep answering 919,1, faithfully reflecting what the source document itself states rather than silently 'correcting' a figure it cannot independently verify. ground_truth_values holds the arithmetically-correct sum per the 2026-08-13 ground-truth decision; the answer is expected to diverge from it every run until this is revisited as its own curation decision.",
+      "provenance": "check_bni_source_pdf.py — independent pdfplumber read of data/raw/company_documents/BANK-BNI.pdf, English p.12 and Indonesian p.1, both agreeing: ['Direct emissions from stationary combustion', '1.206,7'], ['Direct emissions from mobile combustion', '15.650,6'], ['Direct emissions from processes', '0'], ['Direct fugitive emissions', '919,1'], ['Direct emissions from LULUCF', '0'], ['Total Direct Emissions (Scope 1)', '919,1']. Components sum to 17.776,4. Reproduced corpus-wide in audit_scope1_totals.py (2026-08-13, 21-bank sweep; BNI one of 4 flagged, the only confirmed row-substitution defect of the four).",
+      "note": "Ground-truth decision made 2026-08-13 (architecture.md): 17.776,4, the sum of BNI's own listed components, is the correct eval ground truth for BNI's Scope 1 total, not 919,1 — but the decision was deliberately withheld from eval_set.json until expected_divergence existed, so it wouldn't register as an undifferentiated FAIL indistinguishable from a real regression. A DIVERGENT verdict on this entry is the expected, documented outcome, not a pipeline regression. It is also not a PASS: the system is, by design, not expected to state this entry's own ground truth (see expected_divergence)."
+    },
+    {
+      "id": "cc-004",
+      "question": "Which banks best address human rights policy disclosure?",
+      "lang": "en",
+      "expected_query_type": "aggregation_ranking",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": null,
+      "expected_sources": [],
+      "ground_truth": "The system must REFUSE to rank, with reason 'unverified_ranking_output' and route_to 'none'. GRI 412-1 has no coded row to anchor on, so its status comes from an uncalibrated retrieval score band; a ranking would report which side of a threshold each bank's score fell on, not which bank discloses more.",
+      "ground_truth_values": [
+        "unverified_ranking_output"
+      ],
+      "expected_answer_shape": "refusal",
+      "target_requirement": "GRI 412-1",
+      "provenance": "LIVE 2026-07-28: ranking_refusal_for_item(GRI 412-1, bank_count=21) returned reason='unverified_ranking_output', route_to='none', for an item with row_anchors=() and directly_disclosed=True. The sweep itself reproduced the recorded figures: range 0.4618-0.6352, split 11 disclosed / 10 partially disclosed.",
+      "note": "A DIFFERENT refusal reason from cc-003's. cc-003 refuses because the requirement is coded and uniform (route to metrics, where the values differ); this refuses because the requirement is unanchored and the assessor is uncalibrated (route nowhere, pending Stage 8). Scoring must distinguish them — an implementation that returned 'route_to: metrics' here would be wrong despite also being a refusal. The 11/10 split is the one the 2026-07-25 entry singles out as reading like a finding while being an artifact."
+    },
+    {
+      "id": "cc-005",
+      "question": "Which banks disclose Scope 3 emissions?",
+      "lang": "en",
+      "expected_query_type": "aggregation_ranking",
+      "expected_domains": [
+        "company_documents"
+      ],
+      "expected_scoped_to": null,
+      "expected_sources": [],
+      "ground_truth": "The system must REFUSE to rank, with reason 'not_directly_disclosed' and route_to 'none'. GRI 305-3 is not disclosed as a separate line item anywhere in this corpus, so there is nothing to rank; no bank was searched and none should be read as failing to disclose it.",
+      "ground_truth_values": [
+        "not_directly_disclosed"
+      ],
+      "expected_answer_shape": "refusal",
+      "target_requirement": "GRI 305-3",
+      "provenance": "LIVE 2026-07-28: ranking_refusal_for_item(GRI 305-3, bank_count=21) returned reason='not_directly_disclosed', route_to='none', for an item with row_anchors=() and directly_disclosed=False. Message returned verbatim: 'GRI 305-3 is not disclosed as a separate line item anywhere in this corpus, so there is nothing to rank. It was not searched, and no bank should be read as failing to disclose it.'",
+      "note": "The THIRD distinct refusal reason, and the one with the highest stakes if it regresses. A ranking here would publish a comparative claim about 21 named banks' Scope 3 disclosure built on a row that does not exist — and per cd-014, the row that superficially looks like one ('Other indirect emissions or removals', reported 0 by 20 of 21 banks) is ISO 14064 Category 6. This is the corpus-wide form of the cd-014/cd-019 trap."
+    },
+    {
+      "id": "st-006",
+      "question": "Does EDGB's G-04 Board Assessment Policy metric reference GRI 2-18?",
+      "lang": "en",
+      "expected_query_type": "single_domain",
+      "expected_domains": [
+        "standards"
+      ],
+      "expected_scoped_to": null,
+      "expected_sources": [
+        {
+          "source_contains": "ESG Disclosure Guide Book",
+          "page_number": 37
+        }
+      ],
+      "ground_truth": "No. The EDGB's G-04 (Board Assessment Policy) metric cites only 'ASEAN Exchanges ESG Metrics' as its cross-reference and does not mention GRI at all, even though GRI 2-18 (Evaluation of the performance of the highest governance body) covers exactly this topic. The GRI linkage EDGB does state runs through a different, adjacent governance metric — G-01 (Board Diversity and Independence), which maps explicitly to GRI 2-9, 2-10, 2-11, 2-15. A correct answer says G-04 has no stated GRI 2-18 reference, and must not infer one from the fact that both concern board performance evaluation.",
+      "ground_truth_values": [],
+      "expected_answer_shape": "verified_negative",
+      "provenance": "Verified live 2026-08-05 by extracting EDGB.pdf directly (pdfplumber): the G-4 guidance block on p.37 (isolated strictly between the 'G-4.' and 'G-5.' headers) contains zero occurrences of the token 'GRI'. Cross-checked independently against Appendix A's ESG Metrics summary table (p.45): the G-04 row's Reference column reads 'ASEAN Exchanges ESG Metrics' only. A full-document scan of all 58 pages of EDGB.pdf found zero occurrences of the token '2-18' anywhere. GRI-2.pdf confirms Disclosure 2-18 is real and titled 'Evaluation of the performance of the highest governance body' (p.29) — topically exact for board assessment, which is what makes the wrong inference plausible. Real ingested chunk page number (37) confirmed via live Qdrant scroll against source_name='ESG Disclosure Guide Book'. Query routing verified against the real classify_query(): single_domain, domains=(standards,), confident=True.",
+      "note": "A FABRICATION TRAP: tests that the system doesn't infer a cross-reference between two adjacent, topically-similar items just because one nearby item does have that cross-reference stated. Both G-01 and G-04 are adjacent EDGB governance metrics about board practices; G-01 explicitly cites GRI 2-9/2-10/2-11/2-15, and GRI 2-18 is a real, topically dead-on GRI disclosure about board performance evaluation. A system that answers 'yes' by analogy with G-01, or because both concern board assessment, has invented a cross-reference the source document never states. The correct answer is a verified negative, which is why expected_answer_shape is 'verified_negative' rather than 'absence' — the evidence positively establishes the reference is absent from two independent locations in the same document, rather than retrieval merely failing to find one."
+    }
+  ]
+}

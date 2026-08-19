@@ -1,0 +1,48 @@
+{
+  "category": "environmental",
+  "source": "IDX ESG Disclosure Guide Book (EDGB), the code system these company reports are natively structured as disclosure-index tables under. Unlike the GRI checklist (checklists/gri/), these codes are not indirect topic anchors for a differently-coded requirement — the code IS the requirement, and it already leads its own value row in every report (confirmed live against BANK-BCA's own English/Indonesian index tables, p.1/3/8), so `row_anchors` is just the code itself.",
+  "items": [
+    {
+      "code": "E-01",
+      "description": "GHG Emission Report: whether the bank's GHG emissions report is consolidated, its organizational boundary, and any excluded subsidiaries.",
+      "topic_keywords": ["ghg emission report", "consolidated ghg report", "organizational boundaries", "laporan emisi grk", "batasan organisasi"],
+      "row_anchors": ["E-01"]
+    },
+    {
+      "code": "E-02",
+      "description": "GHG emissions intensity: Scope 1+2 emissions normalized per unit of revenue.",
+      "topic_keywords": ["ghg emissions intensity", "emissions per revenue", "intensitas emisi grk", "tCO2e per revenue"],
+      "row_anchors": ["E-02"]
+    },
+    {
+      "code": "E-03",
+      "description": "Electricity consumption: direct, indirect, and total energy consumed.",
+      "topic_keywords": ["electricity consumption", "energy consumption", "konsumsi energi listrik", "konsumsi energi"],
+      "row_anchors": ["E-03"]
+    },
+    {
+      "code": "E-04",
+      "description": "Water consumption: total water consumed (m3).",
+      "topic_keywords": ["water consumption", "konsumsi air"],
+      "row_anchors": ["E-04"]
+    },
+    {
+      "code": "E-05",
+      "description": "Waste generation: total waste generated (tons).",
+      "topic_keywords": ["waste generation", "total waste", "limbah yang dihasilkan"],
+      "row_anchors": ["E-05"]
+    },
+    {
+      "code": "E-06",
+      "description": "Net-zero emission target commitment: whether the bank has a published net-zero target and its target year.",
+      "topic_keywords": ["net zero target", "net zero emission", "komitmen net zero", "target net zero"],
+      "row_anchors": ["E-06"]
+    },
+    {
+      "code": "E-07",
+      "description": "GHG emission reduction commitment: whether the bank commits to an emissions-reduction target (%, tCO2e, and target year).",
+      "topic_keywords": ["emission reduction commitment", "ghg reduction target", "komitmen pengurangan emisi", "target pengurangan emisi grk"],
+      "row_anchors": ["E-07"]
+    }
+  ]
+}

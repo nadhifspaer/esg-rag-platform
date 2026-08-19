@@ -1,0 +1,45 @@
+{
+  "category": "governance",
+  "source": "ESG Disclosure Guide Book (EDGB), the 'G' (Governance) ESG-metric indicators (G-1–G-9) in the `standards` corpus. Board-oversight items are anchored on EDGB's G-indicator mappings to GRI 2 General Disclosures (GRI 2-9 / 2-10 / 2-11 / 2-15) — and unlike the topic standards, the GRI 2 standard PDF (GRI-2.pdf) is itself in the knowledge base. Anti-corruption is anchored on EDGB G-7 (Code of Ethics / Anti-Corruption -> GRI 205-1) and expanded to the full GRI 205 disclosure set (205-1 operations assessed / 205-2 communication and training / 205-3 confirmed incidents), the same way the environmental checklist expanded GRI 305 to its Scope 1/2/3 set. Scoped to board oversight and anti-corruption — the governance topics most material to banks. Notes on EDGB's tagging: EDGB's board-governance indicators (G-1 board diversity/independence, G-3 chair/CEO separation, G-6 election criteria, G-9 conflict-of-interest) consolidate under the four GRI 2 disclosures above rather than one row per EDGB indicator; EDGB indicators tagged 'ASEAN Exchanges ESG Metrics' only (G-2 board-meeting attendance, G-4 board assessment policy) carry no GRI code and are omitted; and EDGB's non-standard tags 'GRI 210' (G-5 board training) and 'GRI 215' (G-8 fair treatment of shareholders, G-9 conflict of interest) are not valid GRI standard numbers — 'GRI 215' is read as a typo for GRI 2-15 (Conflicts of interest, captured above), and G-5 board training (no clean standard GRI mapping) is omitted rather than carried under an invalid code. Economic items (GRI 201 Economic Performance, e.g. EDGB S-12 CSR) are economic-performance disclosures, not governance, and are out of scope for this checklist.",
+  "items": [
+    {
+      "code": "GRI 2-9",
+      "description": "Governance structure and composition: the structure and composition of the bank's highest governance body (board of directors and board of commissioners) and its committees, including board size, independent members, and gender diversity of the board.",
+      "topic_keywords": ["governance structure", "board composition", "board of directors", "board of commissioners", "board diversity", "independent commissioners", "struktur tata kelola", "dewan komisaris", "dewan direksi", "komite"]
+    },
+    {
+      "code": "GRI 2-10",
+      "description": "Nomination and selection of the highest governance body: the processes and criteria for nominating and selecting members of the board of directors and commissioners, including required qualifications, experience, and independence.",
+      "topic_keywords": ["nomination", "board selection", "director selection criteria", "nomination and remuneration committee", "board appointment", "nominasi", "kriteria pemilihan direksi", "seleksi dewan"],
+      "row_anchors": ["G-06"]
+    },
+    {
+      "code": "GRI 2-11",
+      "description": "Chair of the highest governance body: whether the chair of the board is also a senior executive, and specifically the separation of the roles of Board Chair (President Commissioner) and Chief Executive Officer (President Director).",
+      "topic_keywords": ["chair of the board", "board chair", "chairman and CEO separation", "separation of chairman and CEO", "president director", "president commissioner", "pemisahan ketua dewan dan CEO", "komisaris utama"],
+      "row_anchors": ["G-03"]
+    },
+    {
+      "code": "GRI 2-15",
+      "description": "Conflicts of interest: the processes by which the highest governance body ensures conflicts of interest are prevented and mitigated, including board independence, conflict-of-interest policies, and related-party transactions.",
+      "topic_keywords": ["conflict of interest", "conflicts of interest", "board independence", "related party transactions", "benturan kepentingan", "independensi dewan", "transaksi pihak berelasi"],
+      "row_anchors": ["G-09", "G-08"]
+    },
+    {
+      "code": "GRI 205-1",
+      "description": "Operations assessed for risks related to corruption: the bank's code of ethics and anti-corruption policy, and the operations or business units assessed for corruption-related risks.",
+      "topic_keywords": ["anti-corruption", "corruption risk", "code of ethics", "code of conduct", "anti-corruption policy", "bribery", "gratification", "anti korupsi", "kode etik", "gratifikasi", "suap"],
+      "row_anchors": ["G-07"]
+    },
+    {
+      "code": "GRI 205-2",
+      "description": "Communication and training about anti-corruption: the bank's communication and training of governance body members, employees, and business partners on its anti-corruption policies and procedures.",
+      "topic_keywords": ["anti-corruption training", "anti-corruption communication", "code of conduct training", "integrity training", "pelatihan anti korupsi", "sosialisasi anti korupsi", "pelatihan kode etik"]
+    },
+    {
+      "code": "GRI 205-3",
+      "description": "Confirmed incidents of corruption and actions taken: the number of confirmed incidents of corruption during the reporting period and the actions taken in response, including whistleblowing reports received and acted upon.",
+      "topic_keywords": ["confirmed incidents of corruption", "corruption incidents", "whistleblowing", "whistleblowing system", "fraud", "insiden korupsi", "sistem pelaporan pelanggaran", "WBS"]
+    }
+  ]
+}

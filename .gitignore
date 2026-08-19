@@ -1,0 +1,85 @@
+# Python (backend/)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+# Root-anchored on purpose: unanchored, this rule silently swallowed all of `frontend/src/lib/`.
+/lib/
+/lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Testing / coverage / caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+
+# Node / Next.js (frontend/)
+node_modules/
+.next/
+out/
+build/
+.pnp
+.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+# `!.env.example` doesn't cover the frontend's `.env.local.example`, so it's re-included by exact path below.
+!/frontend/.env.local.example
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Raw source data: ignore all contents, but keep the manifest and empty-folder placeholders committed.
+data/raw/**/*
+!data/raw/**/.gitkeep
+!data/raw/manifest.json
+
+/.agents/
+/.claude/
+/.codex/
+/.impeccable/
+/.github/hooks/
+/.github/skills/
+/AGENTS.md
+
+# Internal planning/governance docs: kept on local disk, not tracked in git.
+/CLAUDE.md
+/PRODUCT.md
+/docs/PROJECT_PLAN.md
+/docs/architecture.md
+/docs/eval-results.md
+
+# Local-only smoke test script: never intended for the repo.
+/backend/scripts/smoke_test.py

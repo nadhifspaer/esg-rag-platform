@@ -1,0 +1,27 @@
+# Docker build context is the repo root (Root Directory on Railway/Render, see backend/Dockerfile's header).
+
+frontend/
+backend/.venv/
+backend/venv/
+**/__pycache__/
+*.pyc
+backend/.pytest_cache/
+backend/.ruff_cache/
+*.egg-info/
+
+# Tests and eval tooling (including the isolated RAGAS venv), dev-only, not runtime.
+backend/tests/
+backend/evals/
+backend/.venv-ragas/
+
+.env
+.env.*
+.git
+.gitignore
+backend/Dockerfile
+docker-compose.yml
+
+# The real PDF corpus (~25MB) is ingestion-time input only; each subfolder is excluded individually so manifest.json is never matched by a broader pattern.
+data/raw/company_documents/
+data/raw/standards/
+data/raw/regulations/

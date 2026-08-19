@@ -1,0 +1,34 @@
+{
+  "name": "company_material_metrics",
+  "description": "A first curated set of headline ESG metrics to extract from the company disclosure-index reports (the `company_documents` domain), spanning environmental, social, and governance. Each entry loads as a MetricSpec (code, description, value_type, topic_keywords). The per-metric `source` field documents why the metric is material and where its value appears in this specific corpus; it is provenance only and is NOT a MetricSpec field — a loader filters it out (the same way ingestion's payload_builder drops manifest `aliases`), so the entries still load through MetricSpec cleanly. Codes are the IDX ESG Disclosure Guide Book (EDGB) metric codes, because these company reports are structured as EDGB disclosure-index tables and the value literally sits in the row keyed by that code.",
+  "metrics": [
+    {
+      "code": "E-06",
+      "description": "Net-zero target year: the calendar year by which the bank commits to reach net-zero greenhouse-gas emissions.",
+      "value_type": "year",
+      "topic_keywords": ["net zero", "net-zero target", "net zero target year", "carbon neutral", "net zero emission", "tahun target net zero", "netral karbon", "emisi nol bersih"],
+      "source": "Material: a bank's net-zero target year is its headline climate-transition commitment and the single most-referenced climate number in ESG disclosures. Extractable: it sits in the environmental ESG-metrics index of each company report, in the EDGB E-06 'Company commitment to Net Zero Emission Target' block (mapping GRI 305-5), which records as explicit fields whether the bank commits to net zero and the target year. Confirmed present in the real corpus — BANK-BCA p.13 carries the E-06 block, which answers 'Does the Company have a net zero emission target commitment?' with 'Yes' for BCA. Because several banks answer that they have no net-zero commitment, extraction must treat 'no target disclosed' as a valid outcome, not a retrieval miss."
+    },
+    {
+      "code": "E-02",
+      "description": "GHG emissions intensity: gross Scope 1 + Scope 2 greenhouse-gas emissions normalized per unit of revenue (tCO2e per Rp).",
+      "value_type": "numeric",
+      "topic_keywords": ["emissions intensity", "GHG emissions intensity", "carbon intensity", "emissions per revenue", "intensitas emisi", "intensitas emisi GRK", "tCO2e per revenue"],
+      "source": "Material: emissions intensity (Scope 1+2 per revenue) is the standard carbon-efficiency measure that is comparable across banks of very different sizes. Extractable: reported as a single quantitative value in the environmental ESG-metrics index under EDGB E-02 'GHG Emission Intensity' (mapping GRI 305-4). Confirmed present as a discrete figure in the real corpus — BANK-BCA p.13 reports E-02 = 1,37 (tCO2e/Rp). value_type numeric: a bare ratio whose unit (tCO2e per Rp) is reported alongside it, not embedded in the number."
+    },
+    {
+      "code": "G-01",
+      "description": "Board gender diversity: the share of women on the bank's board of directors and commissioners.",
+      "value_type": "percentage",
+      "topic_keywords": ["board gender diversity", "women on board", "female directors", "female commissioners", "board composition by gender", "keberagaman gender dewan", "komisaris perempuan", "direksi perempuan", "proporsi perempuan"],
+      "source": "Material: board-level gender diversity is a core governance/diversity indicator for banks and a common ESG-rating input. Extractable: the governance ESG-metrics index reports the gender composition of the board of directors and commissioners under EDGB G-01 'Board Diversity and Independence' (which EDGB maps to GRI 2-9; the woman-share is the GRI 405-1 diversity-of-governance-bodies figure). It appears in the governance disclosure-index section of each company report; the percentage is read there directly or computed from the reported male/female board counts. value_type percentage: the target output is the share (%) of women on the board."
+    },
+    {
+      "code": "S-05",
+      "description": "Average training hours per employee: the average number of training hours undertaken per employee during the reporting year.",
+      "value_type": "numeric",
+      "topic_keywords": ["average training hours", "training hours per employee", "employee training hours", "training and development", "jam pelatihan", "rata-rata jam pelatihan", "pelatihan per karyawan"],
+      "source": "Material: average training hours per employee is the standard human-capital-investment metric and a core social disclosure for banks. Extractable: reported as a discrete quantitative value in the social ESG-metrics index under EDGB S-05 'Employee Training and Development' (mapping GRI 404-1). Confirmed present in the real corpus — BANK-BCA p.15 reports 'Average training hour per employee' as its own indicator row. value_type numeric: hours per employee, a bare quantity."
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "category": "governance",
+  "source": "IDX ESG Disclosure Guide Book (EDGB). Codes and descriptions confirmed live against BANK-BCA's own bilingual index table (p.9/18) and the real value rows (p.6/16-17) — same discipline as `checklists/edgb/environmental.json` and `checklists/edgb/social.json`.",
+  "items": [
+    {
+      "code": "G-01",
+      "description": "Board diversity and independence: the composition of the board of directors and commissioners by diversity and independence.",
+      "topic_keywords": ["board diversity", "board independence", "management diversity", "keberagaman manajemen", "independensi"],
+      "row_anchors": ["G-01"]
+    },
+    {
+      "code": "G-02",
+      "description": "Board meeting attendance: total attendance of directors and commissioners at board meetings.",
+      "topic_keywords": ["board meeting attendance", "director attendance", "kehadiran direksi dan komisaris", "rapat dewan"],
+      "row_anchors": ["G-02"]
+    },
+    {
+      "code": "G-03",
+      "description": "Chairman/CEO separation policy: whether the bank has a policy regarding separation of the Chairman of the Board and CEO.",
+      "topic_keywords": ["chairman ceo separation", "separation of chairman and ceo", "pemisahan chairman dan ceo"],
+      "row_anchors": ["G-03"]
+    },
+    {
+      "code": "G-04",
+      "description": "Board assessment policy: whether the bank has a policy regarding board of directors and commissioners appraisal.",
+      "topic_keywords": ["board assessment policy", "board appraisal", "penilaian dewan direksi dan komisaris"],
+      "row_anchors": ["G-04"]
+    },
+    {
+      "code": "G-05",
+      "description": "Board training policy: whether the bank has a policy regarding board of directors and commissioners training and development.",
+      "topic_keywords": ["board training policy", "board development", "pelatihan dewan direksi dan komisaris"],
+      "row_anchors": ["G-05"]
+    },
+    {
+      "code": "G-06",
+      "description": "Board selection criteria: whether the bank has special criteria for board appointment and re-election.",
+      "topic_keywords": ["board selection criteria", "board appointment criteria", "kriteria pemilihan dewan"],
+      "row_anchors": ["G-06"]
+    },
+    {
+      "code": "G-07",
+      "description": "Code of ethics and/or anti-corruption policy: whether the bank has a policy regarding ethics and/or anti-corruption.",
+      "topic_keywords": ["code of ethics", "anti-corruption policy", "kode etik", "anti-korupsi"],
+      "row_anchors": ["G-07"]
+    },
+    {
+      "code": "G-08",
+      "description": "Fair treatment of shareholders policy: whether the bank has a policy on equitable treatment of shareholders.",
+      "topic_keywords": ["fair treatment of shareholders", "equitable shareholder treatment", "perlakuan adil terhadap pemegang saham"],
+      "row_anchors": ["G-08"]
+    },
+    {
+      "code": "G-09",
+      "description": "Conflict of interest prevention policy: whether the bank has a policy on the obligations of directors/commissioners to prevent conflicts of interest.",
+      "topic_keywords": ["conflict of interest policy", "conflict of interest prevention", "pencegahan konflik kepentingan"],
+      "row_anchors": ["G-09"]
+    }
+  ]
+}

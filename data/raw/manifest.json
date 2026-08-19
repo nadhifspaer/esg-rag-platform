@@ -1,0 +1,285 @@
+{
+  "description": "Registry of source PDFs in data/raw. The PDFs themselves are gitignored; this manifest is the committed record of what belongs in each knowledge domain. Add an entry per document as it is collected.",
+  "domains": {
+    "company_documents": [
+      {
+        "file": "BANK-BRI.pdf",
+        "bank": "PT Bank Raya Indonesia Tbk",
+        "aliases": [
+          "Bank Raya",
+          "AGRO",
+          "Bank Raya Indonesia"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-JAGO.pdf",
+        "bank": "PT Bank Jago Tbk",
+        "aliases": [
+          "Bank Jago",
+          "JAGO",
+          "ARTO"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-MNC.pdf",
+        "bank": "PT Bank MNC Internasional Tbk",
+        "aliases": [
+          "MNC Bank",
+          "Bank MNC",
+          "MNC",
+          "BABP",
+          "Bank ICB Bumiputera"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-ALADIN.pdf",
+        "bank": "PT Bank Aladin Syariah Tbk",
+        "aliases": [
+          "Bank Aladin",
+          "Aladin Syariah",
+          "ALADIN",
+          "BANK"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-BCA.pdf",
+        "bank": "PT Bank Central Asia Tbk",
+        "aliases": [
+          "BCA",
+          "Bank Central Asia",
+          "BBCA"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-UOB.pdf",
+        "bank": "PT Bank UOB Indonesia",
+        "aliases": [
+          "UOB",
+          "UOB Indonesia",
+          "United Overseas Bank Indonesia"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-MESTIKA_DHARMA.pdf",
+        "bank": "PT Bank Mestika Dharma Tbk",
+        "aliases": [
+          "Bank Mestika",
+          "Mestika Dharma",
+          "BBMD"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-BNI.pdf",
+        "bank": "PT Bank Negara Indonesia (Persero) Tbk",
+        "aliases": [
+          "BNI",
+          "Bank Negara Indonesia",
+          "BBNI"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-GANESHA.pdf",
+        "bank": "PT Bank Ganesha Tbk",
+        "aliases": [
+          "Bank Ganesha",
+          "GANESHA"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-MANDIRI.pdf",
+        "bank": "PT Bank Mandiri (Persero) Tbk",
+        "aliases": [
+          "Bank Mandiri",
+          "MANDIRI",
+          "BMRI"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-CIMB.pdf",
+        "bank": "PT Bank CIMB Niaga Tbk",
+        "aliases": [
+          "CIMB Niaga",
+          "Bank CIMB Niaga",
+          "CIMB",
+          "BNGA"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-MAYBANK.pdf",
+        "bank": "PT Bank Maybank Indonesia Tbk",
+        "aliases": [
+          "Maybank Indonesia",
+          "MAYBANK",
+          "BNII",
+          "Bank Internasional Indonesia"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-SYARIAH_INDONESIA.pdf",
+        "bank": "PT Bank Syariah Indonesia Tbk",
+        "aliases": [
+          "BSI",
+          "Bank Syariah Indonesia",
+          "BRIS"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-PEMBANGUNAN_DAERAH_SULAWESI_UTARA_GORONTALO.pdf",
+        "bank": "PT Bank Pembangunan Daerah Sulawesi Utara dan Gorontalo",
+        "aliases": [
+          "Bank SulutGo",
+          "BPD Sulut Gorontalo",
+          "SulutGo",
+          "Bank Sulut Gorontalo"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-SMBC.pdf",
+        "bank": "PT Bank SMBC Indonesia Tbk",
+        "aliases": [
+          "SMBC Indonesia",
+          "SMBC",
+          "Bank BTPN",
+          "BTPN"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-AGI.pdf",
+        "bank": "PT Bank Artha Graha Internasional Tbk",
+        "aliases": [
+          "AGI",
+          "Bank AGI",
+          "Artha Graha",
+          "Bank Artha Graha",
+          "INPC"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-CHINA_CONSTRUCTION.pdf",
+        "bank": "PT Bank China Construction Bank Indonesia Tbk",
+        "aliases": [
+          "CCB Indonesia",
+          "China Construction",
+          "Bank Windu Kentjana International",
+          "MCOR"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-MEGA.pdf",
+        "bank": "PT Bank Mega Tbk",
+        "aliases": [
+          "Bank Mega",
+          "MEGA"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-OCBC.pdf",
+        "bank": "PT Bank OCBC NISP Tbk",
+        "aliases": [
+          "OCBC NISP",
+          "Bank OCBC NISP",
+          "OCBC",
+          "NISP"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-NATIONALNOBU.pdf",
+        "bank": "PT Bank Nationalnobu Tbk",
+        "aliases": [
+          "Bank Nationalnobu",
+          "Nationalnobu",
+          "NOBU"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      },
+      {
+        "file": "BANK-PANIN_DUBAI.pdf",
+        "bank": "PT Bank Panin Dubai Syariah Tbk",
+        "aliases": [
+          "Panin Dubai Syariah",
+          "Bank Panin Dubai",
+          "PNBS"
+        ],
+        "year": 2025,
+        "document_type": "sustainability_report"
+      }
+    ],
+    "standards": [
+      {
+        "file": "GRI-1.pdf",
+        "official_title": "GRI 1: Foundation",
+        "aliases": [
+          "GRI 1",
+          "GRI1"
+        ],
+        "document_type": "gri_standard"
+      },
+      {
+        "file": "GRI-2.pdf",
+        "official_title": "GRI 2: General Disclosures",
+        "aliases": [
+          "GRI 2",
+          "GRI2"
+        ],
+        "document_type": "gri_standard"
+      },
+      {
+        "file": "GRI-3.pdf",
+        "official_title": "GRI 3: Material Topics",
+        "aliases": [
+          "GRI 3",
+          "GRI3"
+        ],
+        "document_type": "gri_standard"
+      },
+      {
+        "file": "EDGB.pdf",
+        "official_title": "ESG Disclosure Guide Book",
+        "aliases": [
+          "EDGB",
+          "ESG Disclosure Guidebook"
+        ],
+        "document_type": "edgb_standard"
+      }
+    ]
+  }
+}

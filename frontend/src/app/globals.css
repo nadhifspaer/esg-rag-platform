@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens: a restrained, light-only neutral palette with one teal accent. */
+:root {
+  --background: 255 255 255;
+  --surface: 248 250 252;
+  /* A near-white grey, one step off `--background`, so the answer bubble reads as a distinct surface. */
+  --surface-raised: 243 244 246;
+  --border: 226 232 240;
+  --foreground: 15 23 42;
+  --muted: 100 116 139;
+  /* teal-700, not teal-600: teal-600 fails WCAG AA contrast (3.74:1); teal-700 computes 5.47:1. */
+  --accent: 15 118 110;
+  --accent-foreground: 255 255 255;
+  --warning: 180 83 9;
+  --danger: 185 28 28;
+}
+
+body {
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+}
+
+/* Disables ligatures on lang="id" text so a screen reader pronounces quoted Bahasa Indonesia correctly. */
+[lang="id"] {
+  font-variant-ligatures: none;
+}
+
+/* Respect a user's reduced-motion preference for the streaming caret and spinners. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
